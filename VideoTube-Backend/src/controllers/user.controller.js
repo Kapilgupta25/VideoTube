@@ -122,7 +122,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 }
 
 
-// loginUser function to login the user and generate the access and refresh token for the user
+    // loginUser function to login the user and generate the access and refresh token for the user
 const loginUser = asyncHandler( async (req, res) => {
     
     // 1. get user data from frontend through req.body
