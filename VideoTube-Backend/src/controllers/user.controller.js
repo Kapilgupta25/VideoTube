@@ -126,6 +126,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 const loginUser = asyncHandler( async (req, res) => {
     
     // 1. get user data from frontend through req.body
+    console.log(req.body);
     const { username, email, password } = req.body;
     console.log('email: ', email);
     console.log('password', password);
@@ -265,6 +266,9 @@ const refreshAccessToken = asyncHandler( async (req, res) => {
 const changeCurrentPassword = asyncHandler( async (req, res) => {
     // 1. get the current password and new password from the request object
     const { oldPassword, newPassword } = req.body;
+    // console.log('oldPassword: ', oldPassword);
+    // console.log('newPassword: ', newPassword);
+    // console.log(req.body);
 
     // 2. get the user from the database using the _id from the request object
     const user = await User.findById(req.user?._id);
@@ -484,11 +488,9 @@ const getUserChannelProfile = asyncHandler( async(req, res) => {
                 },
                 isSubscribed: {
                     $cond: {
-                        if: {
-                            $in: [req.user?._id, "$subscribers.subscriber"],
-                            then: true,
-                            else: false
-                        }
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                        then: true,
+                        else: false
                     }
                 }
             }

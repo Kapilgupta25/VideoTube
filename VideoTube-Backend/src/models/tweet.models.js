@@ -9,6 +9,10 @@ const tweetSchema = new Schema(
         owner: {
             type: Schema.Types.ObjectId,
             ref: 'User'
+        },
+        media: {
+            type: String,
+            default: null
         }
     },
     { timestamps: true } 

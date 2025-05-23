@@ -5,7 +5,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router()
 
-// http://localhost:5000/api/v1/user/register 
+// http://localhost:8000/api/v1/user/register 
 router.route('/register').post(
     // middleware to upload the file to the server before calling the registerUser function
     upload.fields([
