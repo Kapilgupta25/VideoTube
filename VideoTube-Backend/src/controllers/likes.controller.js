@@ -2,7 +2,7 @@ import mongoose, { isValidObjectId} from "mongoose";
 import { ApiError } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { Likes } from "../models/likes.models.js";
+import { Like } from "../models/like.models.js";
 
 // --------------------- 1. toogleVideoLike Controller -------------------
 const toogleVideoLike = asyncHandler(async (req, res) => {
@@ -20,17 +20,17 @@ const toogleVideoLike = asyncHandler(async (req, res) => {
     }
 
     // Check if the user has already liked the video
-    const like = await Likes.findOne({ video: videoId, user: user._id });
+    const like = await Like.findOne({ video: videoId, likedBy: user._id });
 
     if (like) {
         // If the user has already liked the video, remove the like
-        await Likes.deleteOne({ _id: like._id });
+        await Like.deleteOne({ _id: like._id });
         return res.status(200).json(
             new ApiResponse(200, null, "Video unliked successfully")
         );
     } else {
         // If the user has not liked the video, add a like
-        await Likes.create({ video: videoId, user: user._id });
+        await Like.create({ video: videoId, likedBy: user._id });
         return res.status(201).json(
             new ApiResponse(201, null, "Video liked successfully")
         );
@@ -54,17 +54,17 @@ const toogleCommentLike = asyncHandler(async (req, res) => {
     }
 
     // Check if the user has already liked the comment
-    const like = await Likes.findOne({ comment: commentId, user: user._id });
+    const like = await Like.findOne({ comment: commentId, likedBy: user._id });
 
     if (like) {
         // If the user has already liked the comment, remove the like
-        await Likes.deleteOne({ _id: like._id });
+        await Like.deleteOne({ _id: like._id });
         return res.status(200).json(
             new ApiResponse(200, null, "Comment unliked successfully")
         );
     } else {
         // If the user has not liked the comment, add a like
-        await Likes.create({ comment: commentId, user: user._id });
+        await Like.create({ comment: commentId, likedBy: user._id });
         return res.status(201).json(
             new ApiResponse(201, null, "Comment liked successfully")
         );
@@ -88,17 +88,17 @@ const toogleTweetLike = asyncHandler(async (req, res) => {
     }
 
     // Check if the user has already liked the tweet
-    const like = await Likes.findOne({ tweet: tweetId, user: user._id });
+    const like = await Like.findOne({ tweet: tweetId, likedBy: user._id });
 
     if (like) {
         // If the user has already liked the tweet, remove the like
-        await Likes.deleteOne({ _id: like._id });
+        await Like.deleteOne({ _id: like._id });
         return res.status(200).json(
             new ApiResponse(200, null, "Tweet unliked successfully")
         );
     } else {
         // If the user has not liked the tweet, add a like
-        await Likes.create({ tweet: tweetId, user: user._id });
+        await Like.create({ tweet: tweetId, likedBy: user._id });
         return res.status(201).json(
             new ApiResponse(201, null, "Tweet liked successfully")
         );
@@ -116,7 +116,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     }
 
     // Get all videos liked by the user
-    const likes = await Likes.find({ user: user._id })
+    const likes = await Like.find({ likedBy: user._id })
         .populate("video", "-password -refreshToken");
 
     return res.status(200).json(

@@ -80,6 +80,9 @@ const addVideoToPlaylist = asyncHandler(async(req, res) =>{
     const { playlistId, videoId } = req.params;
     const user = req.user;
 
+    console.log("videoId:", videoId);
+    console.log("playlistId:", playlistId);
+
     // Check if the user is logged in
     if (!user) {
         throw new ApiError(401, "User not logged in");

@@ -19,9 +19,11 @@ const likeSchema = new Schema(
             ref: 'User'
         }
     },
-    { timestamps: true } 
+    { timestamps: true }
 )
 
+// This index ensures that a user can only like a video, comment, or tweet once
+likeSchema.index({ video: 1, likedBy: 1 }, { unique: true });
 
 
 export const Like = mongoose.model('Like', likeSchema);

@@ -5,8 +5,6 @@ import { User } from "../models/user.models.js"
 
 
 
-
-
 // for verifying the access token for loggedOut users and loggedIn users 
 export const verifyJWT = asyncHandler( async (req, _, next) => {
     try {
