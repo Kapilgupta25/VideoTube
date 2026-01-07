@@ -8,7 +8,7 @@ const app = express();
 
 // cross origin resource sharing to allow the request from the frontend to the backend
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Use
     credentials: true
 }))
 
@@ -33,6 +33,8 @@ import tweetRoutes from "./routes/tweet.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
 import likesRoutes from "./routes/likes.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
+import healthCheckRoutes from "./routes/healthcheck.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
 
 
 // declare routes
@@ -42,7 +44,9 @@ app.use('/api/v1/subscription', subscriptionRoutes);
 app.use('/api/v1/tweet', tweetRoutes);
 app.use('/api/v1/playlist', playlistRoutes);
 app.use('/api/v1/likes', likesRoutes);      
-app.use('/api/v1/comment', commentRoutes);             
+app.use('/api/v1/comment', commentRoutes);           
+app.use('/api/v1/healthcheck', healthCheckRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);  
 
 
 export default app;

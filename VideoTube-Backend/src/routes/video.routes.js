@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllVideoes, publishAVideo, getVideoById, deleteVideo, updateVideo, togglePublishStatus } from "../controllers/video.controller.js";
+import { getAllVideoes, publishAVideo, getVideoById, deleteVideo, updateVideo, togglePublishStatus, getAllPublishedVideos } from "../controllers/video.controller.js";
 
 const router = Router()
 
@@ -9,8 +9,9 @@ import { upload } from "../middlewares/multer.middleware.js";
 // it will verify all routes in this file
 router.use(verifyJWT)
 
+router.route("/").get(getAllPublishedVideos);
 
-router.route("/")
+router.route("/userVidoes")
     .get(getAllVideoes)
     .post(
         upload.fields([

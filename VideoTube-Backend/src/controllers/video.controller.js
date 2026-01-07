@@ -178,6 +178,53 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     );
 })
 
+// -------------------- 7. getAllPublishedVideos Controller ----------------
+const getAllPublishedVideos = asyncHandler(async (req, res) => {
+    const {
+        page = 1,
+        limit = 10,
+        query = "",
+        sort = "createdAt",
+        sortType = "desc"
+    } = req.query;
+
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
+    // Build search filter
+    const filter = { isPublished: true };
+    if (query) {
+        filter.title = { $regex: query, $options: "i" }; // Case-insensitive
+    }
+
+    // Build sorting object
+    const sortOrder = sortType === "asc" ? 1 : -1;
+    const sortBy = { [sort]: sortOrder };
+
+    // Get total count for pagination info
+    const totalVideos = await Video.countDocuments(filter);
+
+    // Fetch videos with filter, sorting, and pagination
+    const videos = await Video.find(filter)
+        .populate("Owner", "name profilePicture")
+        .sort(sortBy)
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .exec();
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            videos,
+            pagination: {
+                total: totalVideos,
+                page: pageNum,
+                limit: limitNum,
+                totalPages: Math.ceil(totalVideos / limitNum)
+            }
+        }, "Videos fetched successfully")
+    );
+});
+
 
 export {
     getAllVideoes,
@@ -185,5 +232,6 @@ export {
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
+    togglePublishStatus,
+    getAllPublishedVideos
 }

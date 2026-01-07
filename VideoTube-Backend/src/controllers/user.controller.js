@@ -127,15 +127,21 @@ const loginUser = asyncHandler( async (req, res) => {
     
     // 1. get user data from frontend through req.body
     console.log(req.body);
-    const { username, email, password } = req.body;
-    console.log('email: ', email);
-    console.log('password', password);
-
-    // 2. check if username or email is provided or not 
-    if( !(username || email)){
-        throw new ApiError(400, 'Email or username is required');
+    const { identifier, password } = req.body;
+    
+    if(!identifier || !password){
+        throw new ApiError(400, 'Email or username and password are required');
     }
+    var email;
+    var username;
 
+    if(identifier.includes('@')){
+        email= identifier;
+    }
+    else{
+        username= identifier;
+    }
+    
     // 4. find the user in the database using the email or username
     const user = await User.findOne({
         $or: [ { email }, { username } ]
@@ -169,13 +175,21 @@ const loginUser = asyncHandler( async (req, res) => {
     .status(200)
     .cookie('accessToken', accessToken, options)
     .cookie('refreshToken', refreshToken, options)
-    .json(
-        new ApiResponse(200,
-            {
-                user, loggedInUser, accessToken, refreshToken
+    .json({
+        status: 200,
+        data: {
+            user: {
+                _id: user._id,
+                email: user.email,
+                // Add any other user fields you need here, e.g., username, fullName
+                // username: user.username,
+                // fullName: user.fullName,
             },
-            'User logged in successfully')
-    );
+            accessToken,
+            refreshToken,
+        },
+        message: "User logged in successfully"
+    });
     
 })
 
@@ -292,6 +306,8 @@ const changeCurrentPassword = asyncHandler( async (req, res) => {
 
 // ---------------- 6. getCurrentUser controller -------------------------
 const getCurrentUser = asyncHandler( async (req, res) => {
+    console.log('Current User: ', req.user);
+
     return res.status(200).json(
         new ApiResponse(200, req.user, 'User found successfully')
     );
